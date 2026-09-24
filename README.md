@@ -1,4 +1,4 @@
-﻿# TuneScope
+# TuneScope
 
 Music discovery platform: cari lagu, artis, dan album, simpan favorit, buat playlist, dan tulis review.
 
