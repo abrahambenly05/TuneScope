@@ -2,11 +2,12 @@ from fastapi import FastAPI
 from sqlalchemy import text
 
 from app.database import engine
-from app.routers import charts
+from app.routers import charts, search
 
 app = FastAPI(title="TuneScope API")
 
 app.include_router(charts.router)
+app.include_router(search.router)
 
 @app.get("/health")
 def health():
