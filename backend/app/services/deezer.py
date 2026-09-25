@@ -11,3 +11,33 @@ async def get_trending_tracks(limit: int = 20) -> list[dict]:
         response.raise_for_status()
         data = response.json()
     return data.get("data", [])
+
+async def search_tracks(query: str, limit: int = 20) -> list[dict]:
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{DEEZER_BASE_URL}/search/track",
+            params={"q": query, "limit": limit},
+        )
+        response.raise_for_status()
+        data = response.json()
+    return data.get("data", [])
+
+async def search_artists(query: str, limit: int = 20) -> list[dict]:
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{DEEZER_BASE_URL}/search/artist",
+            params={"q": query, "limit": limit},
+        )
+        response.raise_for_status()
+        data = response.json()
+    return data.get("data", [])
+
+async def search_albums(query: str, limit: int = 20) -> list[dict]:
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{DEEZER_BASE_URL}/search/album",
+            params={"q": query, "limit": limit},
+        )
+        response.raise_for_status()
+        data = response.json()
+    return data.get("data", [])
