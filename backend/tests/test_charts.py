@@ -28,3 +28,47 @@ def test_trending_tracks(httpx_mock):
     
     assert response.status_code == 200
     assert response.json() == FAKE_DEEZER_RESPONSE
+
+FAKE_ALBUM_RESPONSE = {"data": [{"id": 1, "title": "Fake Album"}]}
+FAKE_ARTIST_RESPONSE = {"data": [{"id": 1, "name": "Fake Artist"}]}
+
+def test_popular_albums(httpx_mock):
+    httpx_mock.add_response(
+        url="https://api.deezer.com/chart/0/albums?limit=20",
+        json=FAKE_ALBUM_RESPONSE,
+    )
+    response = client.get("/api/charts/albums")
+    assert response.status_code == 200
+    assert response.json() == FAKE_ALBUM_RESPONSE
+
+def test_popular_artists(httpx_mock):
+    httpx_mock.add_response(
+        url="https://api.deezer.com/chart/0/artists?limit=20",
+        json=FAKE_ARTIST_RESPONSE,
+    )
+    response = client.get("/api/charts/artists")
+    assert response.status_code == 200
+    assert response.json() == FAKE_ARTIST_RESPONSE
+
+def test_new_releases(httpx_mock):
+    httpx_mock.add_response(
+        url="https://api.deezer.com/chart/0/albums?limit=30",
+        json={
+            "data": [
+                {"id": 1, "title": "Album A"},
+                {"id": 2, "title": "Album B"},
+            ]
+        },
+    )
+    httpx_mock.add_response(
+        url="https://api.deezer.com/album/1",
+        json={"id": 1, "title": "Album A", "release_date": "2020-01-01"},
+    )
+    httpx_mock.add_response(
+        url="https://api.deezer.com/album/2",
+        json={"id": 2, "title": "Album B", "release_date": "2024-01-01"},
+    )
+    response = client.get("/api/charts/new-releases")
+    assert response.status_code == 200
+    body = response.json()
+    assert [album["id"] for album in body["data"]] == [2, 1]
