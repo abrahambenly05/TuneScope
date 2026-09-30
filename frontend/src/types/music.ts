@@ -38,3 +38,13 @@ export interface AlbumDetail extends Album {
 }
 
 export type SearchKind = 'tracks' | 'artists' | 'albums'
+
+export interface Genre {
+    id: number
+    name: string
+    picture: string
+}
+
+export interface GenreDetail extends Genre {
+    artists: Artist[]
+}
