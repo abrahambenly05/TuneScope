@@ -14,12 +14,14 @@ const fakeTrack = {
 }
 const fakeArtist = { id: 1, name: 'Fake Artist', picture_medium: 'https://example.com/a.jpg' }
 const fakeAlbum = { id: 1, title: 'Fake Album', cover_medium: 'https://example.com/cover.jpg' }
+const fakeGenre = { id: 132, name: 'Fake Genre', picture: 'https://example.com/g.jpg' }
 
 function byChart(url: string) {
     if (url.includes('/api/charts/artists')) return [fakeArtist]
     if (url.includes('/api/charts/albums') || url.includes('/api/charts/new-releases')) {
         return [fakeAlbum]
     }
+    if (url.includes('/api/genres')) return [fakeGenre]
     return [fakeTrack]
 }
 
@@ -60,6 +62,7 @@ describe('App', () => {
         expect(await screen.findByText('Fake Song')).toBeInTheDocument()
         expect(screen.getAllByText('Fake Artist').length).toBeGreaterThan(0)
         expect(screen.getAllByAltText('Fake Album').length).toBeGreaterThan(0)
+        expect(await screen.findByText('Fake Genre')).toBeInTheDocument()
     })
 
     it('shows an error message when trending fails', async () => {

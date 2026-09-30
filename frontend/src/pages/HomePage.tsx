@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom'
 import AlbumTile from '../components/AlbumTile'
 import ArtistTile from '../components/ArtistTile'
+import GenreGrid from '../components/GenreGrid'
 import HorizontalSection from '../components/HorizontalSection'
 import SearchBar from '../components/SearchBar'
 import TrackRow from '../components/TrackRow'
+import { useGenres } from '../hooks/useGenres'
 import { useNewReleases, usePopularAlbums, usePopularArtists } from '../hooks/useHomeSections'
 import { useTrendingTracks } from '../hooks/useTrendingTracks'
 
@@ -13,6 +15,7 @@ export default function HomePage() {
     const popularArtists = usePopularArtists()
     const popularAlbums = usePopularAlbums()
     const newReleases = useNewReleases()
+    const genres = useGenres()
 
     return (
         <div className="space-y-12">
@@ -66,6 +69,13 @@ export default function HomePage() {
                     <AlbumTile key={album.id} album={album} />
                 ))}
             </HorizontalSection>
+
+            <section>
+                <h2 className="mb-4 text-2xl font-extrabold">Explore a genre</h2>
+                {genres.isLoading && <p className="text-slate-500">Loading genres...</p>}
+                {genres.isError && <p className="text-red-600">Failed to load genres.</p>}
+                {genres.data && <GenreGrid genres={genres.data} />}
+            </section>
         </div>
     )
 }

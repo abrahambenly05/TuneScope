@@ -113,3 +113,24 @@ async def get_new_releases(limit: int = 20) -> list[dict]:
 
     detailed.sort(key=lambda album: album.get("release_date", ""), reverse=True)
     return detailed[:limit]
+
+async def get_genres() -> list[dict]:
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"{DEEZER_BASE_URL}/genre")
+        response.raise_for_status()
+        genres = response.json().get("data", [])
+    return [genre for genre in genres if genre.get("id") != 0]
+
+async def get_genre(genre_id: int) -> dict:
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"{DEEZER_BASE_URL}/genre/{genre_id}")
+        response.raise_for_status()
+        return response.json()
+
+async def get_genre_artists(genre_id: int, limit: int = 20) -> list[dict]:
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{DEEZER_BASE_URL}/genre/{genre_id}/artists", params={"limit": limit}
+        )
+        response.raise_for_status()
+        return response.json().get("data", [])
