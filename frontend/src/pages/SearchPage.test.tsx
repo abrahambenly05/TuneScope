@@ -70,6 +70,7 @@ describe('SearchPage', () => {
         expect(await screen.findByText('Fake Song')).toBeInTheDocument()
         expect(fetchMock).toHaveBeenCalledWith(
             expect.stringContaining('/api/search/tracks?q=weeknd'),
+            expect.anything(),
         )
     })
 
@@ -110,6 +111,7 @@ describe('SearchPage', () => {
         expect(await screen.findByText('Fake Song')).toBeInTheDocument()
         expect(fetchMock).toHaveBeenCalledWith(
             expect.stringContaining('q=blinding%20lights'),
+            expect.anything(),
         )
     })
 })
