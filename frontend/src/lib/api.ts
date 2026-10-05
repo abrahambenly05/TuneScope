@@ -9,10 +9,24 @@ export class ApiError extends Error {
     }
 }
 
-export async function apiFetch<T>(path:string): Promise<T> {
-    const response = await fetch(`${API_BASE_URL}${path}`)
+export async function apiFetch<T>(path:string, init?: RequestInit): Promise<T> {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+        credentials: 'include',
+        ...init
+    })
     if (!response.ok) {
         throw new ApiError(response.status, `Request to ${path} failed with ${response.status}`)
     }
+    if (response.status === 204) {
+        return undefined as T
+    }
     return response.json() as Promise<T>
+}
+
+export async function apiPost<T>(path: string, body?: unknown): Promise<T> {
+    return apiFetch<T>(path, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: body !== undefined ? JSON.stringify(body) : undefined,
+    })
 }
