@@ -5,8 +5,8 @@ import AlbumDetailPage from './pages/AlbumDetailPage'
 import ArtistDetailPage from './pages/ArtistDetailPage'
 import GenreDetailPage from './pages/GenreDetailPage'
 import HomePage from './pages/HomePage'
+import LibraryPage from './pages/LibraryPage'
 import LoginPage from './pages/LoginPage'
-import PlaceholderPage from './pages/PlaceholderPage'
 import ProfilePage from './pages/ProfilePage'
 import RegisterPage from './pages/RegisterPage'
 import SearchPage from './pages/SearchPage'
@@ -24,9 +24,9 @@ export default function App() {
         <Route path="genres/:id" element={<GenreDetailPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
-        <Route path="library" element={<PlaceholderPage title="Library" />} />
         <Route element={<ProtectedRoute />}>
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="library" element={<LibraryPage />} />
         </Route>
       </Route>
     </Routes>

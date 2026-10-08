@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom'
 import AlbumCard from '../components/AlbumCard'
 import TrackRow from '../components/TrackRow'
+import FavoriteButton from '../components/FavoriteButton'
 import { useArtist } from '../hooks/useDetail'
 
 export default function ArtistDetailPage() {
@@ -18,8 +19,17 @@ export default function ArtistDetailPage() {
                     alt={artist.name}
                     className="h-32 w-32 rounded-full object-cover"
                 />
-                <div>
-                    <h1 className="text-3xl font-extrabold">{artist.name}</h1>
+                <div className="flex-1">
+                    <div className="flex items-center gap-3">
+                        <h1 className="text-3xl font-extrabold">{artist.name}</h1>
+                        <FavoriteButton
+                          itemType="artist"
+                          externalId={artist.id}
+                          title={artist.name}
+                          imageUrl={artist.picture_medium}
+                          className="text-2xl"
+                        />
+                    </div>
                     {artist.nb_fan !== undefined && (
                         <p className="text-slate-500">{artist.nb_fan.toLocaleString('en-US')} fans</p>
                     )}

@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
+import FavoriteButton from '../components/FavoriteButton'
 import PlayPreviewButton from '../components/PlayPreviewButton'
 import { useTrack } from '../hooks/useDetail'
 
@@ -35,7 +36,17 @@ export default function TrackDetailPage() {
                     {formatDuration(track.duration)}
                     {track.release_date && ` · ${track.release_date}`}
                 </p>
-                {track.preview && <PlayPreviewButton src={track.preview} />}
+                <div className="flex items-center gap-3">
+                    {track.preview && <PlayPreviewButton src={track.preview} />}
+                    <FavoriteButton
+                      itemType="track"
+                      externalId={track.id}
+                      title={track.title}
+                      subtitle={track.artist.name}
+                      imageUrl={track.album.cover_medium}
+                      className="text-2xl"
+                    />
+                </div>
             </div>
         </div>
     )

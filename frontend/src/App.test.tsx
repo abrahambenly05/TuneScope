@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
+import { AuthProvider } from './auth/AuthContext'
 
 const fakeTrack = {
     id: 1,
@@ -28,7 +29,15 @@ function byChart(url: string) {
 function stubChartsFetch() {
     vi.stubGlobal(
         'fetch',
-        vi.fn(async (url: string) => ({ ok: true, json: async() => ({ data: byChart(url) }) })),
+        vi.fn(async (url: string) => {
+            if (url.includes('/api/auth/me')) {
+                return { ok: false, status: 401, json: async () => ({}) }
+            }
+            if (url.includes('/api/favorites')) {
+                return { ok: true, status: 200, json: async () => [] }
+            }
+            return { ok: true, status: 200, json: async () => ({ data: byChart(url) }) }
+        }),
     )
 }
 
@@ -39,7 +48,9 @@ function renderApp(path = '/') {
     return render(
         <QueryClientProvider client={queryClient}>
             <MemoryRouter initialEntries={[path]}>
-                <App />
+                <AuthProvider>
+                    <App />
+                </AuthProvider>
             </MemoryRouter>
         </QueryClientProvider>
     )
@@ -66,13 +77,20 @@ describe('App', () => {
     })
 
     it('shows an error message when trending fails', async () => {
-        vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 500 }))
+        vi.stubGlobal(
+            'fetch',
+            vi.fn().mockResolvedValue({ ok: false, status: 500, json: async () => ({}) }),
+        )
         renderApp()
         expect(await screen.findByText(/failed to load tracks/i)).toBeInTheDocument()
     })
 
-    it('renders the placeholder page for /library', () => {
+    it('redirects to login when visiting the protected library page while logged out', async () => {
+        vi.stubGlobal(
+            'fetch',
+            vi.fn().mockResolvedValue({ ok: false, status: 401, json: async () => ({}) }),
+        )
         renderApp('/library')
-        expect(screen.getByRole('heading', { name: 'Library' })).toBeInTheDocument()
+        expect(await screen.findByRole('heading', { name: 'Log in' })).toBeInTheDocument()
     })
 })

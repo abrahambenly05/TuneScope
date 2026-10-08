@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import TrackRow from '../components/TrackRow'
+import FavoriteButton from '../components/FavoriteButton'
 import { useAlbum } from '../hooks/useDetail'
 
 export default function AlbumDetailPage() {
@@ -18,7 +19,17 @@ export default function AlbumDetailPage() {
                  className="h-48 w-48 shrink-0 rounded-3xl object-cover"
                 />
                 <div>
-                    <h1 className="text-3xl font-extrabold">{album.title}</h1>
+                    <div className="flex items-center gap-3">
+                        <h1 className="text-3xl font-extrabold">{album.title}</h1>
+                        <FavoriteButton
+                          itemType="album"
+                          externalId={album.id}
+                          title={album.title}
+                          subtitle={album.artist?.name}
+                          imageUrl={album.cover_medium}
+                          className="text-2xl"
+                        />
+                    </div>
                     {album.artist && (
                         <Link to={`/artists/${album.artist.id}`} className="text-lg text-slate-600 hover:text-brand">
                             {album.artist.name}
