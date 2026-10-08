@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from '../App'
+import { AuthProvider } from '../auth/AuthContext'
 
 const fakeTrack = {
     id: 1,
@@ -31,10 +32,18 @@ const fakeAlbum = {
     tracks: { data: [fakeTrack] },
 }
 
-function stubFetch(response: unknown) {
+function stubFetch(detailResponse: unknown) {
     vi.stubGlobal(
         'fetch',
-        vi.fn().mockResolvedValue({ ok: true, json: async () => response }),
+        vi.fn(async (url: string) => {
+            if (url.includes('/api/auth/me')) {
+                return { ok: false, status: 401, json: async () => ({}) }
+            }
+            if (url.includes('/api/favorites')) {
+                return { ok: true, status: 200, json: async () => [] }
+            }
+            return { ok: true, status: 200, json: async () => detailResponse }
+        }),
     )
 }
 
@@ -45,7 +54,9 @@ function renderApp(path: string) {
     return render(
         <QueryClientProvider client={queryClient}>
             <MemoryRouter initialEntries={[path]}>
-                <App />
+                <AuthProvider>
+                    <App />
+                </AuthProvider>
             </MemoryRouter>
         </QueryClientProvider>
     )
@@ -79,7 +90,10 @@ describe('detail pages', () => {
     })
 
     it('shows a not-found message for a missing track', async() => {
-        vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 404 }))
+        vi.stubGlobal(
+            'fetch', 
+            vi.fn().mockResolvedValue({ ok: false, status: 404, json: async () => ({}) }),
+        )
         renderApp('/tracks/999')
         expect(await screen.findByText(/song not found/i)).toBeInTheDocument()
     })

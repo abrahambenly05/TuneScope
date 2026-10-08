@@ -4,14 +4,15 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from '../App'
+import { AuthProvider } from '../auth/AuthContext'
 
 const fakeTrack = {
-        id: 1,
-        title: 'Fake Song',
-        duration: 200,
-        preview: '',
-        artist: { id: 1, name: 'Fake Artist' },
-        album: { id: 1, title: 'Fake Album', cover_medium: 'https://example.com/cover.jpg' },
+    id: 1,
+    title: 'Fake Song',        
+    duration: 200,
+    preview: '',
+    artist: { id: 1, name: 'Fake Artist' },
+    album: { id: 1, title: 'Fake Album', cover_medium: 'https://example.com/cover.jpg' },
 }
 const fakeArtist = {
     id: 1,
@@ -33,10 +34,15 @@ function byKind(url: string) {
 }
 
 function stubFetch(responder: (url: string) => unknown[]) {
-    const fetchMock = vi.fn(async (url: string) => ({
-        ok: true,
-        json: async () => ({ data: responder(url) }),
-    }))
+    const fetchMock = vi.fn(async (url: string) => {
+        if (url.includes('/api/auth/me')) {
+            return { ok: false, status: 401, json: async () => ({}) }
+        }
+        if (url.includes('/api/favorites')) {
+            return { ok: true, status: 200, json: async () => [] }
+        }
+        return { ok: true, status: 200, json: async () => ({ data: responder(url) }) }
+    })
     vi.stubGlobal('fetch', fetchMock)
     return fetchMock
 }
@@ -48,7 +54,9 @@ function renderApp(path:string) {
     return render(
         <QueryClientProvider client={queryClient}>
             <MemoryRouter initialEntries={[path]}>
-                <App />
+                <AuthProvider>
+                    <App />
+                </AuthProvider>
             </MemoryRouter>
         </QueryClientProvider>
     )
@@ -97,7 +105,10 @@ describe('SearchPage', () => {
     })
 
     it('shows an error message when the API fails', async () => {
-        vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 500 }))
+        vi.stubGlobal(
+            'fetch', 
+            vi.fn().mockResolvedValue({ ok: false, status: 500, json: async () => ({}) }),
+        )
         renderApp('/search?q=weeknd')
         expect(await screen.findByText(/search failed/i)).toBeInTheDocument()
     })
