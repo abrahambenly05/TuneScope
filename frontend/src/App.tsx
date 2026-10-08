@@ -7,6 +7,8 @@ import GenreDetailPage from './pages/GenreDetailPage'
 import HomePage from './pages/HomePage'
 import LibraryPage from './pages/LibraryPage'
 import LoginPage from './pages/LoginPage'
+import PlaylistPage from './pages/PlaylistsPage'
+import PlaylistDetailPage from './pages/PlaylistDetailPage'
 import ProfilePage from './pages/ProfilePage'
 import RegisterPage from './pages/RegisterPage'
 import SearchPage from './pages/SearchPage'
@@ -27,6 +29,8 @@ export default function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="profile" element={<ProfilePage />} />
           <Route path="library" element={<LibraryPage />} />
+          <Route path="playlists" element={<PlaylistPage />} />
+          <Route path="playlists/:id" element={<PlaylistDetailPage />} />
         </Route>
       </Route>
     </Routes>
