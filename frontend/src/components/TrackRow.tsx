@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import AddToPlaylistButton from './AddToPlaylistButton'
 import FavoriteButton from './FavoriteButton'
 import type { Track } from '../types/music'
 
@@ -37,6 +38,12 @@ export default function TrackRow({ track, rank }: TrackRowProps) {
             </div>
             <div className="flex items-center gap-3">
                 <span className="text-sm text-slate-500">{formatDuration(track.duration)}</span>
+                <AddToPlaylistButton
+                  externalId={track.id}
+                  title={track.title}
+                  subtitle={track.artist.name}
+                  imageUrl={track.album.cover_medium}
+                />
                 <FavoriteButton
                   itemType="track"
                   externalId={track.id}
