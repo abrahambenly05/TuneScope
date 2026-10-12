@@ -1,11 +1,15 @@
 import { NavLink, Outlet } from 'react-router-dom'
 
 const links = [
-    { to: '/', label: 'Home', end: true},
-    { to: '/search', label: 'Search', end: false },
-    { to: '/library', label: 'Library', end: false },
-    { to: '/profile', label: 'Profile', end: false },
+    { to: '/', label: 'Home', end: true, mobile: true},
+    { to: '/search', label: 'Search', end: false, mobile: true },
+    { to: '/discover', label: 'Discover', end: false, mobile: false },
+    { to: '/library', label: 'Library', end: false, mobile: true },
+    { to: '/playlists', label: 'Playlists', end: false, mobile: false },
+    { to: '/profile', label: 'Profile', end: false, mobile: true },
 ]
+
+const mobileLinks = links.filter((link) => link.mobile)
 
 function linkClass({ isActive }: { isActive: boolean }) {
     return isActive ? 'font-semibold text-brand' : 'text-slate-500 hover:text-ink'
@@ -37,7 +41,7 @@ export default function Layout() {
                 aria-label="Mobile"
                 className="fixed inset-x-0 bottom-0 flex justify-around border-t border-slate-200 bg-white py-3 text-sm md:hidden"
             >
-                {links.map((link) => (
+                {mobileLinks.map((link) => (
                     <NavLink key={link.to} to={link.to} end={link.end} className={linkClass}>
                         {link.label}
                     </NavLink>
