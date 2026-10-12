@@ -16,7 +16,7 @@ function TrackResults({ query }: ResultsProps) {
         return <p className="text-slate-500">No songs found for "{query}".</p>
     }
     return (
-        <ul className="rounded-3xl border border-slate-200 bg-white p-2">
+        <ul className="rounded-3xl border border-slate-200 bg-surface p-2">
             {data.map((track, index) => (
                 <TrackRow key={track.id} track={track} rank={index + 1} />
             ))}

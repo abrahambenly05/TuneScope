@@ -47,7 +47,7 @@ export default function AlbumDetailPage() {
                 </div>
             </div>
 
-            <ul className="rounded-3xl border border-slate-200 bg-white p-2">
+            <ul className="rounded-3xl border border-slate-200 bg-surface p-2">
                 {album.tracks.data.map((track, index) => (
                     <TrackRow key={track.id} track={track} rank={index + 1} />
                 ))}

@@ -33,7 +33,7 @@ export default function HomePage() {
                 <h2 className="mb-4 text-2xl font-extrabold">Trending songs</h2>
                 {trending.isLoading && <p className="text-slate-500">Loading trending tracks...</p>}
                 {trending.isError && <p className="text-red-600">Failed to load tracks.</p>}
-                <ul className="rounded-3xl border border-slate-200 bg-white p-2 empty:hidden">
+                <ul className="rounded-3xl border border-slate-200 bg-surface p-2 empty:hidden">
                     {trending.data?.slice(0, 10).map((track, index) => (
                         <TrackRow key={track.id} track={track} rank={index + 1} />
                     ))}

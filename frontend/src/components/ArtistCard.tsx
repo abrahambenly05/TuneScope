@@ -10,7 +10,7 @@ export default function ArtistCard({ artist }: { artist: Artist }) {
               externalId={artist.id}
               title={artist.name}
               imageUrl={artist.picture_medium}
-              className="absolute right-2 top-2 rounded-full bg-white/90 px-2 py-1"
+              className="absolute right-2 top-2 rounded-full bg-surface/90 px-2 py-1"
             />
             <Link to={`/artists/${artist.id}`}>
                 <img

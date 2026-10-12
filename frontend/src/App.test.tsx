@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 import { AuthProvider } from './auth/AuthContext'
+import { ThemeProvider } from './theme/ThemeProvider'
 
 const fakeTrack = {
     id: 1,
@@ -46,13 +47,15 @@ function renderApp(path = '/') {
         defaultOptions: { queries: { retry: false } },
     })
     return render(
-        <QueryClientProvider client={queryClient}>
-            <MemoryRouter initialEntries={[path]}>
-                <AuthProvider>
-                    <App />
-                </AuthProvider>
-            </MemoryRouter>
-        </QueryClientProvider>
+        <ThemeProvider>
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter initialEntries={[path]}>
+                    <AuthProvider>
+                        <App />
+                    </AuthProvider>
+                </MemoryRouter>
+            </QueryClientProvider>
+        </ThemeProvider>
     )
 }
 

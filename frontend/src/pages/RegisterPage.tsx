@@ -39,7 +39,7 @@ export default function RegisterPage() {
                   value={displayName}
                   onChange={(event) => setDisplayName(event.target.value)}
                   placeholder="Display name"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 outline-none focus:border-brand"
+                  className="w-full rounded-xl border border-slate-200 bg-surface px-4 py-2 outline-none focus:border-brand"
                 />
                 <input
                   type="email"
@@ -47,7 +47,7 @@ export default function RegisterPage() {
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   placeholder="Email"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 outline-none focus:border-brand"
+                  className="w-full rounded-xl border border-slate-200 bg-surface px-4 py-2 outline-none focus:border-brand"
                 />
                 <input
                   type="password"
@@ -56,7 +56,7 @@ export default function RegisterPage() {
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   placeholder="Password (min. 8 characters)"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 outline-none focus:border-brand"
+                  className="w-full rounded-xl border border-slate-200 bg-surface px-4 py-2 outline-none focus:border-brand"
                 />
                 {error && <p className="text-sm text-red-600">{error}</p>}
                 <button

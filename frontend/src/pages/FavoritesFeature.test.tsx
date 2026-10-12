@@ -5,6 +5,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from '../App'
 import { AuthProvider } from '../auth/AuthContext'
+import { ThemeProvider } from '../theme/ThemeProvider'
 import type { Favorite, FavoriteCreatePayload } from '../types/favorite'
 
 const fakeUser = { id: 1, email: 'test@example.com', display_name: 'Test User' }
@@ -74,18 +75,20 @@ function stubFetch(
     )
 }
 
-function renderApp(path: string) {
+function renderApp(path = '/') {
     const queryClient = new QueryClient({
-        defaultOptions: { queries: { retry: false} },
+        defaultOptions: { queries: { retry: false } },
     })
     return render(
-        <QueryClientProvider client={queryClient}>
-            <MemoryRouter initialEntries={[path]}>
-                <AuthProvider>
-                    <App />
-                </AuthProvider>
-            </MemoryRouter>
-        </QueryClientProvider>
+        <ThemeProvider>
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter initialEntries={[path]}>
+                    <AuthProvider>
+                        <App />
+                    </AuthProvider>
+                </MemoryRouter>
+            </QueryClientProvider>
+        </ThemeProvider>
     )
 }
 

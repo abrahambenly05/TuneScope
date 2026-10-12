@@ -12,7 +12,7 @@ export default function ProfilePage() {
             <button
               type="button"
               onClick={() => logout()}
-              className="rounded-full border border-slate-200 bg-white px-5 py-2 font-semibold text-slate-700"
+              className="rounded-full border border-slate-200 bg-surface px-5 py-2 font-semibold text-slate-700"
             >
                 Log out
             </button>

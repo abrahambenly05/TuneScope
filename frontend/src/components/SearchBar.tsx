@@ -18,7 +18,7 @@ export default function SearchBar({ initialValue = '', onSubmit }: SearchBarProp
         <form
          onSubmit={handleSubmit}
          role="search"
-         className="flex max-w-lg items-center gap-2 rounded-full border border-slate-200 bg-white p-1.5 pl-5 focus-within:border-brand"
+         className="flex max-w-lg items-center gap-2 rounded-full border border-slate-200 bg-surface p-1.5 pl-5 focus-within:border-brand"
         >
             <input
              value={value}

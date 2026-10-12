@@ -28,7 +28,7 @@ export default function LibraryPage() {
                       aria-selected={tab === t.key}
                       onClick={() => setTab(t.key)}
                       className={`rounded-full border-slate-200 px-4 py-1.5 text-sm font-semibold ${
-                        tab === t.key ? 'bg-brand text-white' : 'bg-white text-slate-600 hover:text-ink'
+                        tab === t.key ? 'bg-brand text-white' : 'bg-surface text-slate-600 hover:text-ink'
                       }`}
                     >
                       {t.label}
@@ -44,7 +44,7 @@ export default function LibraryPage() {
                 {favorites?.map((favorite) => (
                     <li
                       key={favorite.id}
-                      className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-2"
+                      className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-surface p-2"
                     >
                         <Link
                           to={`/${activePath}/${favorite.external_id}`}

@@ -103,7 +103,7 @@ export default function AddToPlaylistButton({
                 <>
                     <div className="fixed inset-0 z-10" onClick={closeDropdown} />
                     <div
-                        className="absolute right-0 z-20 mt-2 w-56 rounded-lg border border-gray-200 bg-white p-2 shadow-lg"
+                        className="absolute right-0 z-20 mt-2 w-56 rounded-lg border border-gray-200 bg-surface p-2 shadow-lg"
                         onClick={(event) => event.stopPropagation()}
                     >
                         <p className="mb-1 px-2 text-xs font-semibold uppercase text-slate-400">
