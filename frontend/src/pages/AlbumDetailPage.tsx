@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import TrackRow from '../components/TrackRow'
 import FavoriteButton from '../components/FavoriteButton'
+import ReviewSection from '../components/ReviewSection'
 import { useAlbum } from '../hooks/useDetail'
 
 export default function AlbumDetailPage() {
@@ -31,7 +32,10 @@ export default function AlbumDetailPage() {
                         />
                     </div>
                     {album.artist && (
-                        <Link to={`/artists/${album.artist.id}`} className="text-lg text-slate-600 hover:text-brand">
+                        <Link 
+                            to={`/artists/${album.artist.id}`} 
+                            className="text-lg text-slate-600 hover:text-brand"
+                        >
                             {album.artist.name}
                         </Link>
                     )}
@@ -48,6 +52,14 @@ export default function AlbumDetailPage() {
                     <TrackRow key={track.id} track={track} rank={index + 1} />
                 ))}
             </ul>
+
+            <ReviewSection
+                itemType="album"
+                externalId={album.id}
+                title={album.title}
+                subtitle={album.artist?.name}
+                imageUrl={album.cover_medium}
+            />
         </div>
     )
 }
