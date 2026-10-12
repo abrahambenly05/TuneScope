@@ -9,7 +9,10 @@ from app.schemas.playlist import (
     PlaylistDetailResponse,
     PlaylistRename,
     PlaylistResponse,
+    PlaylistTrackResponse,
     PlaylistVisibility,
+    PublicPlaylistDetailResponse,
+    PublicPlaylistResponse,
     TrackAdd,
     TrackReorder,
 )
@@ -48,6 +51,49 @@ def create_playlist(
     db.commit()
     db.refresh(playlist)
     return playlist
+
+@router.get("/public", response_model=list[PublicPlaylistResponse])
+def list_public_playlists(db: Session = Depends(get_db)):
+    rows = (
+        db.query(Playlist, User.display_name)
+        .join(User, Playlist.user_id == User.id)
+        .filter(Playlist.is_public.is_(True))
+        .order_by(Playlist.created_at.desc())
+        .all()
+    )
+    return [
+        PublicPlaylistResponse(
+            id=playlist.id,
+            name=playlist.name,
+            is_public=playlist.is_public,
+            created_at=playlist.created_at,
+            owner_name=owner_name,
+            track_count=len(playlist.tracks),
+        )
+        for playlist, owner_name in rows
+    ]
+    
+@router.get("/public/{playlist_id}", response_model=PublicPlaylistDetailResponse)
+def get_public_playlist(playlist_id: int, db: Session = Depends(get_db)):
+    row = (
+        db.query(Playlist, User.display_name)
+        .join(User, Playlist.user_id == User.id)
+        .filter(Playlist.id == playlist_id, Playlist.is_public.is_(True))
+        .first()
+    )
+    if not row:
+        raise HTTPException(status_code=404, detail="Playlist not found")
+    
+    playlist, owner_name = row
+    return PublicPlaylistDetailResponse(
+            id=playlist.id,
+            name=playlist.name,
+            is_public=playlist.is_public,
+            created_at=playlist.created_at,
+            owner_name=owner_name,
+            track_count=len(playlist.tracks),
+            tracks=[PlaylistTrackResponse.model_validate(track) for track in playlist.tracks],
+        )
 
 @router.get("/{playlist_id}", response_model=PlaylistDetailResponse)
 def get_playlist(

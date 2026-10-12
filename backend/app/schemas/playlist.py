@@ -42,3 +42,10 @@ class PlaylistResponse(BaseModel):
 
 class PlaylistDetailResponse(PlaylistResponse):
     tracks: list[PlaylistTrackResponse]
+    
+class PublicPlaylistResponse(PlaylistResponse):
+    owner_name: str
+    track_count: int
+    
+class PublicPlaylistDetailResponse(PublicPlaylistResponse):
+    tracks: list[PlaylistTrackResponse]
