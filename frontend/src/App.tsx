@@ -9,6 +9,8 @@ import LibraryPage from './pages/LibraryPage'
 import LoginPage from './pages/LoginPage'
 import PlaylistPage from './pages/PlaylistsPage'
 import PlaylistDetailPage from './pages/PlaylistDetailPage'
+import PublicPlaylistPage from './pages/PublicPlaylistsPage'
+import PublicPlaylistDetailPage from './pages/PublicPlaylistDetailPage'
 import ProfilePage from './pages/ProfilePage'
 import RegisterPage from './pages/RegisterPage'
 import SearchPage from './pages/SearchPage'
@@ -26,6 +28,8 @@ export default function App() {
         <Route path="genres/:id" element={<GenreDetailPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
+        <Route path="discover" element={<PublicPlaylistPage />} />
+        <Route path="discover/playlists/:id" element={<PublicPlaylistDetailPage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="profile" element={<ProfilePage />} />
           <Route path="library" element={<LibraryPage />} />
