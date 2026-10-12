@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom'
 import AlbumCard from '../components/AlbumCard'
 import TrackRow from '../components/TrackRow'
 import FavoriteButton from '../components/FavoriteButton'
+import ReviewSection from '../components/ReviewSection'
 import { useArtist } from '../hooks/useDetail'
 
 export default function ArtistDetailPage() {
@@ -53,6 +54,13 @@ export default function ArtistDetailPage() {
                     ))}
                 </ul>
             </section>
+
+            <ReviewSection
+                itemType="artist"
+                externalId={artist.id}
+                title={artist.name}
+                imageUrl={artist.picture_medium}
+            />
         </div>
     )
 }
