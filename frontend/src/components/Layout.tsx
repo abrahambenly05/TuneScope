@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom'
+import { useTheme } from '../theme/theme'
 
 const links = [
     { to: '/', label: 'Home', end: true, mobile: true},
@@ -13,6 +14,22 @@ const mobileLinks = links.filter((link) => link.mobile)
 
 function linkClass({ isActive }: { isActive: boolean }) {
     return isActive ? 'font-semibold text-brand' : 'text-slate-500 hover:text-ink'
+}
+
+function ThemeToggle() {
+    const { theme, toggleTheme } = useTheme()
+
+    return (
+        <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            className="ml-auto rounded-full border border-slate-200 px-3 py-1.5 text-lg leading-none hover:border-brand"
+        >
+            {theme === 'dark' ? '☀' : '☾'}
+        </button>
+    )
 }
 
 export default function Layout() {
@@ -30,6 +47,7 @@ export default function Layout() {
                             </NavLink>
                         ))}
                     </nav>
+                    <ThemeToggle />
                 </div>
             </header>
 
@@ -39,7 +57,7 @@ export default function Layout() {
 
             <nav
                 aria-label="Mobile"
-                className="fixed inset-x-0 bottom-0 flex justify-around border-t border-slate-200 bg-white py-3 text-sm md:hidden"
+                className="fixed inset-x-0 bottom-0 flex justify-around border-t border-slate-200 bg-surface py-3 text-sm md:hidden"
             >
                 {mobileLinks.map((link) => (
                     <NavLink key={link.to} to={link.to} end={link.end} className={linkClass}>

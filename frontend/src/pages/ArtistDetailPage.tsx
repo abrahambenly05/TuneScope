@@ -39,7 +39,7 @@ export default function ArtistDetailPage() {
 
             <section>
                 <h2 className="mb-4 text-2xl font-extrabold">Popular songs</h2>
-                <ul className="rounded-3xl border border-slate-200 bg-white p-2">
+                <ul className="rounded-3xl border border-slate-200 bg-surface p-2">
                     {artist.top_tracks.slice(0, 10).map((track, index) => (
                         <TrackRow key={track.id} track={track} rank={index + 1} />
                     ))}

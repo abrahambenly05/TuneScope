@@ -31,7 +31,7 @@ export default function SearchPage() {
                              aria-selected={kind === tab.key}
                              onClick={() => setKind(tab.key)}
                              className={`rounded-full border border-slate-200 px-4 py-1.5 text-sm font-semibold ${
-                                kind === tab.key ? 'bg-brand text-white' : 'bg-white text-slate-600 hover:text-ink'
+                                kind === tab.key ? 'bg-brand text-white' : 'bg-surface text-slate-600 hover:text-ink'
                              }`}
                             >
                              {tab.label}

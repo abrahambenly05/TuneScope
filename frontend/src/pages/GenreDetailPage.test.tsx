@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from '../App'
 import { AuthProvider } from '../auth/AuthContext'
+import { ThemeProvider } from '../theme/ThemeProvider'
 
 const fakeGenreDetail = {
     id: 132,
@@ -27,18 +28,20 @@ function stubFetch(detailResponse: unknown) {
     )
 }
 
-function renderApp(path:string) {
+function renderApp(path = '/') {
     const queryClient = new QueryClient({
         defaultOptions: { queries: { retry: false } },
     })
     return render(
-        <QueryClientProvider client={queryClient}>
-            <MemoryRouter initialEntries={[path]}>
-                <AuthProvider>
-                    <App />
-                </AuthProvider>
-            </MemoryRouter>
-        </QueryClientProvider>,
+        <ThemeProvider>
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter initialEntries={[path]}>
+                    <AuthProvider>
+                        <App />
+                    </AuthProvider>
+                </MemoryRouter>
+            </QueryClientProvider>
+        </ThemeProvider>
     )
 }
 

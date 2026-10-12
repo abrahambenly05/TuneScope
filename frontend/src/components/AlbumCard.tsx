@@ -11,7 +11,7 @@ export default function AlbumCard({ album }: { album: Album }) {
               title={album.title}
               subtitle={album.artist?.name}
               imageUrl={album.cover_medium}
-              className="absolute right-2 top-2 rounded-full bg-white/90 px-2 py-1"
+              className="absolute right-2 top-2 rounded-full bg-surface/90 px-2 py-1"
             />
             <Link to={`/albums/${album.id}`}>
                 <img
