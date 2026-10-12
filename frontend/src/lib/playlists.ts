@@ -79,3 +79,20 @@ export function reorderPlaylistTracks(
         body: JSON.stringify(order),
     });
 }
+
+export interface PublicPlaylist extends Playlist {
+    owner_name: string;
+    track_count: number;
+}
+
+export interface PublicPlaylistDetail extends PublicPlaylist {
+    tracks: PlaylistTrack[];
+}
+
+export function fetchPublicPlaylists(): Promise<PublicPlaylist[]> {
+    return apiFetch('/api/playlists/public')
+}
+
+export function fetchPublicPlaylistDetail(id: number): Promise<PublicPlaylistDetail> {
+    return apiFetch(`/api/playlists/public/${id}`)
+}
