@@ -115,3 +115,39 @@ def test_playlist_not_owned_returns_404():
     register_and_login("other@example.com")
     response = client.get(f"/api/playlists/{playlist_id}")
     assert response.status_code == 404
+    
+def test_list_public_playlists_only_returns_public_ones():
+    register_and_login()
+    public_id = client.post("/api/playlists", json={"name": "Public Mix"}).json()["id"]
+    client.patch(f"/api/playlists/{public_id}/visibility", json={"is_public": True})
+    client.post("/api/playlists", json={"name": "Private Mix"})
+    
+    response = client.get("/api/playlists/public")
+    assert response.status_code == 200
+    
+    body = response.json()
+    assert len(body) == 1
+    assert body[0]["name"] == "Public Mix"
+    assert body[0]["owner_name"] == "Playlist User"
+    assert body[0]["track_count"] == 0
+    
+def test_get_public_playlist_detail():
+    register_and_login()
+    playlist_id = client.post("/api/playlists", json={"name": "Public Mix"}).json()["id"]
+    client.patch(f"/api/playlists/{playlist_id}/visibility", json={"is_public": True})
+    client.post(f"/api/playlists/{playlist_id}/tracks", json=track_payload(external_id=1))
+    
+    response = client.get(f"/api/playlists/public/{playlist_id}")
+    assert response.status_code == 200
+    
+    body = response.json()
+    assert body["owner_name"] == "Playlist User"
+    assert body["track_count"] == 1
+    assert len(body["tracks"]) == 1
+    
+def test_get_private_playlist_via_public_endpoint_returns_404():
+    register_and_login()
+    playlist_id = client.post("/api/playlists", json={"name": "Private Mix"}).json()["id"]
+    
+    response = client.get(f"/api/playlists/public/{playlist_id}")
+    assert response.status_code == 404
