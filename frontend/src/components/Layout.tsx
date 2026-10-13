@@ -5,6 +5,7 @@ const links = [
     { to: '/', label: 'Home', end: true, mobile: true},
     { to: '/search', label: 'Search', end: false, mobile: true },
     { to: '/discover', label: 'Discover', end: false, mobile: false },
+    { to: '/feed', label: 'Feed', end: false, mobile: true },
     { to: '/library', label: 'Library', end: false, mobile: true },
     { to: '/playlists', label: 'Playlists', end: false, mobile: false },
     { to: '/profile', label: 'Profile', end: false, mobile: true },
