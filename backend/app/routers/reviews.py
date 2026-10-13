@@ -6,8 +6,23 @@ from app.auth.dependencies import get_current_user, get_db
 from app.models.review import Review
 from app.models.user import User
 from app.schemas.review import ReviewCreate, ReviewResponse, ReviewSummary, ReviewUpdate
+from app.services.activity import record_activity, remove_activity
 
 router = APIRouter(prefix="/api/reviews", tags=["reviews"])
+
+def sync_review_activity(db: Session, review: Review) -> None:
+    record_activity(
+        db,
+        user_id=review.user_id,
+        activity_type="review",
+        reference_id=review.id,
+        item_type=review.item_type,
+        external_id=review.external_id,
+        rating=review.rating,
+        title=review.title,
+        subtitle=review.subtitle,
+        image_url=review.image_url,
+    )
 
 @router.get("", response_model=list[ReviewResponse])
 def list_reviews(
@@ -77,6 +92,7 @@ def create_or_update_review(
         existing.image_url = payload.image_url
         db.commit()
         db.refresh(existing)
+        sync_review_activity(db, existing)
         return existing
     
     review = Review(
@@ -92,6 +108,7 @@ def create_or_update_review(
     db.add(review)
     db.commit()
     db.refresh(review)
+    sync_review_activity(db, review)
     return review
 
 def get_owned_review(review_id: int, db: Session, current_user: User) -> Review:
@@ -116,6 +133,7 @@ def update_review(
     review.comment = payload.comment
     db.commit()
     db.refresh(review)
+    sync_review_activity(db, review)
     return review
 
 @router.delete("/{review_id}", status_code=204)
@@ -125,5 +143,7 @@ def delete_review(
     current_user: User = Depends(get_current_user),
 ):
     review = get_owned_review(review_id, db, current_user)
+    review_id_value = review_id
     db.delete(review)
     db.commit()
+    remove_activity(db, activity_type="review", reference_id=review_id_value)
