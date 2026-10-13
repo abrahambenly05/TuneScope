@@ -16,6 +16,7 @@ from app.schemas.playlist import (
     TrackAdd,
     TrackReorder,
 )
+from app.services.activity import record_activity, remove_activity
 
 router = APIRouter(prefix="/api/playlists", tags=["playlists"])
 
@@ -28,6 +29,21 @@ def get_owned_playlist(playlist_id: int, user: User, db: Session) -> Playlist:
     if playlist is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Playlist not found")
     return playlist
+
+def sync_playlist_activity(db: Session, playlist: Playlist) -> None:
+    if not playlist.is_public:
+        remove_activity(db, activity_type="playlist", reference_id=playlist.id)
+        return
+    
+    track_count = len(playlist.tracks)
+    record_activity(
+        db,
+        user_id=playlist.user_id,
+        activity_type="playlist",
+        reference_id=playlist.id,
+        title=playlist.name,
+        subtitle=f"{track_count} track{'s' if track_count != 1 else ''}",
+    )
 
 @router.get("", response_model=list[PlaylistResponse])
 def list_playlists(
@@ -50,6 +66,7 @@ def create_playlist(
     db.add(playlist)
     db.commit()
     db.refresh(playlist)
+    sync_playlist_activity(db, playlist)
     return playlist
 
 @router.get("/public", response_model=list[PublicPlaylistResponse])
@@ -114,6 +131,7 @@ def rename_playlist(
     playlist.name = payload.name
     db.commit()
     db.refresh(playlist)
+    sync_playlist_activity(db, playlist)
     return playlist
 
 @router.patch("/{playlist_id}/visibility", response_model=PlaylistResponse)
@@ -127,6 +145,7 @@ def set_playlist_visibility(
     playlist.is_public = payload.is_public
     db.commit()
     db.refresh(playlist)
+    sync_playlist_activity(db, playlist)
     return playlist
 
 @router.delete("/{playlist_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -136,8 +155,10 @@ def delete_playlist(
     db: Session = Depends(get_db),
 ):
     playlist = get_owned_playlist(playlist_id, current_user, db)
+    playlist_id_value = playlist.id
     db.delete(playlist)
     db.commit()
+    remove_activity(db, activity_type="playlist", reference_id=playlist_id_value)
     
 @router.post(
     "/{playlist_id}/tracks",
@@ -163,6 +184,7 @@ def add_track(
         db.add(track)
         db.commit()
         db.refresh(playlist)
+        sync_playlist_activity(db, playlist)
         
     return playlist
 
@@ -188,6 +210,7 @@ def remove_track(
         t.position = index
     db.commit()
     db.refresh(playlist)
+    sync_playlist_activity(db, playlist)
     return playlist
 
 @router.patch("/{playlist_id}/tracks/reorder", response_model=PlaylistDetailResponse) 
