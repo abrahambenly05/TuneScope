@@ -11,6 +11,7 @@ import PlaylistPage from './pages/PlaylistsPage'
 import PlaylistDetailPage from './pages/PlaylistDetailPage'
 import PublicPlaylistPage from './pages/PublicPlaylistsPage'
 import PublicPlaylistDetailPage from './pages/PublicPlaylistDetailPage'
+import FeedPage from './pages/FeedPage'
 import ProfilePage from './pages/ProfilePage'
 import RegisterPage from './pages/RegisterPage'
 import SearchPage from './pages/SearchPage'
@@ -30,6 +31,7 @@ export default function App() {
         <Route path="register" element={<RegisterPage />} />
         <Route path="discover" element={<PublicPlaylistPage />} />
         <Route path="discover/playlists/:id" element={<PublicPlaylistDetailPage />} />
+        <Route path="feed" element={<FeedPage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="profile" element={<ProfilePage />} />
           <Route path="library" element={<LibraryPage />} />
