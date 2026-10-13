@@ -5,7 +5,7 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from app.config import settings
 from app.database import Base
-from app.models import activity, favorite, playlist, review, user  # noqa: F401
+from app.models import activity, favorite, history, playlist, review, user  # noqa: F401
 
 from logging.config import fileConfig
 
