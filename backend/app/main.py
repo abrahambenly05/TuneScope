@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
 from app.database import engine
-from app.routers import activities, auth, charts, detail, favorites, genres, history, playlists, reviews, search
+from app.routers import activities, auth, charts, detail, favorites, genres, history, playlists, recommendations, reviews, search
 
 app = FastAPI(title="TuneScope API")
 
@@ -25,6 +25,7 @@ app.include_router(playlists.router)
 app.include_router(reviews.router)
 app.include_router(activities.router)
 app.include_router(history.router)
+app.include_router(recommendations.router)
 
 @app.get("/health")
 def health():

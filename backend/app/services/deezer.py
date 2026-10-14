@@ -70,6 +70,14 @@ async def get_artist_albums(artist_id: int, limit: int = 20) -> list[dict]:
         response.raise_for_status()
         return response.json().get("data", [])
     
+async def get_related_artists(artist_id: int, limit: int = 5) -> list[dict]:
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{DEEZER_BASE_URL}/artist/{artist_id}/related", params={"limit": limit}
+        )
+        response.raise_for_status()
+        return response.json().get("data", [])
+    
 async def get_album(album_id: int) -> dict:
     async with httpx.AsyncClient() as client:
         response = await client.get(f"{DEEZER_BASE_URL}/album/{album_id}")
