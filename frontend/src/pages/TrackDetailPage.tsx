@@ -1,8 +1,10 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Link, useParams } from 'react-router-dom'
 import FavoriteButton from '../components/FavoriteButton'
 import PlayPreviewButton from '../components/PlayPreviewButton'
 import ReviewSection from '../components/ReviewSection'
 import { useTrack } from '../hooks/useDetail'
+import { recordPlay } from '../lib/history'
 
 function formatDuration(seconds: number) {
     const minutes = Math.floor(seconds / 60)
@@ -13,6 +15,15 @@ function formatDuration(seconds: number) {
 export default function TrackDetailPage() {
     const { id = '' } = useParams()
     const { data: track, isLoading, isError } = useTrack(id)
+    const queryClient = useQueryClient()
+
+    const logPlay = useMutation({
+        mutationFn: recordPlay,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['history'] })
+            queryClient.invalidateQueries({ queryKey: ['top-tracks'] })
+        },
+    })
 
     if (isLoading) return <p className="text-slate-500">Loading...</p>
     if (isError || !track) return <p className="text-red-600">Song not found.</p>
@@ -42,7 +53,19 @@ export default function TrackDetailPage() {
                         {track.release_date && ` · ${track.release_date}`}
                     </p>
                     <div className="flex items-center gap-3">
-                        {track.preview && <PlayPreviewButton src={track.preview} />}
+                        {track.preview && (
+                            <PlayPreviewButton 
+                                src={track.preview}
+                                onPlay={() =>
+                                    logPlay.mutate({
+                                        external_id: track.id,
+                                        title: track.title,
+                                        subtitle: track.artist.name,
+                                        image_url: track.album.cover_medium,
+                                    })
+                                } 
+                            />
+                        )}
                         <FavoriteButton
                             itemType="track"
                             externalId={track.id}

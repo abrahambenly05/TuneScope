@@ -1,6 +1,11 @@
 import { useRef, useState } from 'react'
 
-export default function PlayPreviewButton( { src }: { src: string } ) {
+type Props = {
+    src: string
+    onPlay?: () => void
+}
+
+export default function PlayPreviewButton({ src, onPlay }: Props) {
     const audioRef = useRef<HTMLAudioElement>(null)
     const [isPlaying, setIsPlaying] = useState(false)
 
@@ -19,7 +24,10 @@ export default function PlayPreviewButton( { src }: { src: string } ) {
          <audio
             ref={audioRef}
             src={src}
-            onPlay={() => setIsPlaying(true)}
+            onPlay={() => {
+                setIsPlaying(true)
+                onPlay?.()
+            }}
             onPause={() => setIsPlaying(false)}
             onEnded={() => setIsPlaying(false)}
          />
