@@ -7,10 +7,12 @@ import SearchBar from '../components/SearchBar'
 import TrackRow from '../components/TrackRow'
 import { useGenres } from '../hooks/useGenres'
 import { useNewReleases, usePopularAlbums, usePopularArtists } from '../hooks/useHomeSections'
+import { useRecommendations } from '../hooks/useRecommendations'
 import { useTrendingTracks } from '../hooks/useTrendingTracks'
 
 export default function HomePage() {
     const navigate = useNavigate()
+    const recommendations = useRecommendations()
     const trending = useTrendingTracks()
     const popularArtists = usePopularArtists()
     const popularAlbums = usePopularAlbums()
@@ -28,6 +30,20 @@ export default function HomePage() {
                 </p>
                 <SearchBar onSubmit={(query) => navigate(`/search?q=${encodeURIComponent(query)}`)} />
             </section>
+
+            {recommendations.data && recommendations.data.length > 0 && (
+                <section>
+                    <h2 className="mb-1 text-2xl font-extrabold">Recommended for you</h2>
+                    <p className="mb-4 text-sm text-slate-500">
+                        Based on the songs you play the most.
+                    </p>
+                    <ul className="rounded-3xl border border-slate-200 bg-surface p-2">
+                        {recommendations.data.slice(0, 10).map((track, index) => (
+                            <TrackRow key={track.id} track={track} rank={index + 1} />
+                        ))}
+                    </ul>
+                </section>
+            )}
 
             <section>
                 <h2 className="mb-4 text-2xl font-extrabold">Trending songs</h2>
