@@ -24,6 +24,27 @@ export type PlayInput = {
     subtitle?: string | null
     image_url?: string | null
 }
+export type TopArtist = {
+    name: string
+    play_count: number
+}
+
+export type DailyPlays = {
+    date: string
+    plays: number
+}
+
+export type HistoryStats = {
+    total_plays: number
+    unique_tracks: number
+    unique_artists: number
+    top_artists: TopArtist[]
+    plays_per_day: DailyPlays[]
+}
+
+export function fetchHistoryStats(): Promise<HistoryStats> {
+    return apiFetch<HistoryStats>('/api/history/stats')
+}
 
 export function recordPlay(payload: PlayInput): Promise<HistoryEntry> {
     return apiFetch<HistoryEntry>('/api/history', {
@@ -44,3 +65,4 @@ export function fetchTopTracks(limit = 10): Promise<TopTrack[]> {
 export function clearHistory(): Promise<void> {
     return apiFetch<void>('/api/history/me', { method: 'DELETE' })
 }
+
