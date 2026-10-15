@@ -107,3 +107,46 @@ def test_history_rejects_invalid_limit():
     client = register_and_login()
     assert client.get("/api/history/me", params={"limit": 0}).status_code == 422
     assert client.get("/api/history/me", params={"limit": 999}).status_code == 422
+    
+def test_stats_are_empty_for_a_new_user():
+    client = register_and_login()
+    stats = client.get("/api/history/stats").json()
+    
+    assert stats["total_plays"] == 0
+    assert stats["unique_tracks"] == 0
+    assert stats["unique_artists"] == 0
+    assert stats["top_artists"] == []
+    assert len(stats["plays_per_day"]) == 14
+    
+def test_stats_count_plays_and_unique_tracks():
+    client = register_and_login()
+    stats = client.post("/api/history", json=play_payload(1, "First Song"))
+    stats = client.post("/api/history", json=play_payload(1, "First Song"))
+    stats = client.post("/api/history", json=play_payload(2, "Second Song"))
+    
+    stats = client.get("/api/history/stats").json()
+    assert stats["total_plays"] == 3
+    assert stats["unique_tracks"] == 2
+    assert stats["unique_artists"] == 1
+    
+def test_stats_rank_top_artists():
+    client = register_and_login()
+    stats = client.post("/api/history", json={"external_id": 1, "title": "A", "subtitle": "Artist One"})
+    stats = client.post("/api/history", json={"external_id": 2, "title": "B", "subtitle": "Artist One"})
+    stats = client.post("/api/history", json={"external_id": 3, "title": "C", "subtitle": "Artist Two"})
+    
+    top = client.get("/api/history/stats").json()["top_artists"]
+    assert top[0] == {"name": "Artist One", "play_count": 2}
+    assert top[1] == {"name": "Artist Two", "play_count": 1}
+    
+def test_stats_put_todays_plays_in_the_last_bucket():
+    client = register_and_login()
+    client.post("/api/history", json=play_payload())
+    
+    days = client.get("/api/history/stats").json()["plays_per_day"]
+    assert len(days) == 14
+    assert days[-1]["plays"] == 1
+    assert days[0]["plays"] == 0
+    
+def test_stats_require_authentication():
+    assert TestClient(app).get("/api/history/stats").status_code == 401 
