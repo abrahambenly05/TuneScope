@@ -25,3 +25,18 @@ class TopTrackResponse(BaseModel):
     subtitle: str | None
     image_url: str | None
     play_count: int
+    
+class TopArtistResponse(BaseModel):
+    name: str
+    play_count: int
+    
+class DailyPlaysResponse(BaseModel):
+    date: str
+    plays: int
+    
+class HistoryStatsResponse(BaseModel):
+    total_plays: int
+    unique_tracks: int
+    unique_artists: int
+    top_artists: list[TopArtistResponse]
+    plays_per_day: list[DailyPlaysResponse]
