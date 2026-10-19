@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
+from app.config import settings
 from app.database import engine
 from app.routers import activities, auth, charts, detail, discovery, favorites, genres, history, playlists, recommendations, reviews, search
 
@@ -9,7 +10,7 @@ app = FastAPI(title="TuneScope API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=settings.cors_origin_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],       
