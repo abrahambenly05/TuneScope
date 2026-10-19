@@ -14,7 +14,7 @@ React + TypeScript, Tailwind CSS, FastAPI, PostgreSQL, SQLAlchemy, Alembic, JWT,
 - [x] Phase 1: MVP (Home, Search, detail pages)
 - [x] Phase 2: Full stack (auth, favorites, playlist, profile)
 - [x] Phase 3: Social (reviews, rating, public playlist, activity feed)
-- [ ] Phase 4: Advanced (recommendation)
+- [x] Phase 4: Advanced (recommendation, mood discovery)
 
 ## Menjalankan proyek
 
@@ -22,6 +22,25 @@ React + TypeScript, Tailwind CSS, FastAPI, PostgreSQL, SQLAlchemy, Alembic, JWT,
 - Docker Desktop
 - Python 3.12
 - Node.js 22
+
+### Environment variable
+
+`backend/.env` (contoh di `.env.example`):
+
+| Variabel | Keterangan |
+| --- | --- |
+| `DATABASE_URL` | Alamat koneksi PostgreSQL |
+| `JWT_SECRET` | Kunci penandatangan token login |
+| `LASTFM_API_KEY` | API key Last.fm untuk fitur Mood Discovery |
+| `CORS_ORIGINS` | Daftar origin frontend yang diizinkan, dipisah koma |
+| `COOKIE_SECURE` | `true` di produksi (HTTPS), `false` saat development |
+| `COOKIE_SAMESITE` | `none` bila frontend dan backend beda domain, `lax` saat development |
+
+`frontend/.env` (contoh di `frontend/.env.example`):
+
+| Variabel | Keterangan |
+| --- | --- |
+| `VITE_API_BASE_URL` | Alamat backend, misalnya `http://127.0.0.1:8000` |
 
 ### 1. Database
 

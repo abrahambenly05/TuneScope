@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.auth.dependencies import get_current_user, get_db
 from app.auth.security import create_access_token, hash_password, verify_password
+from app.config import settings
 from app.models.user import User
 from app.schemas.auth import LoginRequest, RegisterRequest, UserResponse
 
@@ -37,14 +38,20 @@ def login(payload: LoginRequest, response: Response, db: Session = Depends(get_d
         key="access_token",
         value=token,
         httponly=True,
-        samesite="lax",
+        secure=settings.cookie_secure,
+        samesite=settings.cookie_samesite,
         max_age=COOKIE_MAX_AGE,
     )
     return user
 
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
 def logout(response: Response):
-    response.delete_cookie("access_token")
+    response.delete_cookie(
+        "access_token",
+        httponly=True,
+        secure=settings.cookie_secure,
+        samesite=settings.cookie_samesite,
+    )
     
 @router.get("/me", response_model=UserResponse)
 def me(current_user: User = Depends(get_current_user)):
