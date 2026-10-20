@@ -52,23 +52,26 @@ def test_popular_artists(httpx_mock):
 
 def test_new_releases(httpx_mock):
     httpx_mock.add_response(
-        url="https://api.deezer.com/chart/0/albums?limit=30",
+        url="https://api.deezer.com/chart/0/artists?limit=25",
+        json={"data": [{"id": 1, "name": "Artist A"}, {"id": 2, "name": "Artist B"}]},
+    )
+    httpx_mock.add_response(
+        url="https://api.deezer.com/artist/1/albums?limit=3",
+        json={"data": [{"id": 10, "title": "Old Album", "release_date": "2020-01-01"}]},
+    )
+    httpx_mock.add_response(
+        url="https://api.deezer.com/artist/2/albums?limit=3",
         json={
             "data": [
-                {"id": 1, "title": "Album A"},
-                {"id": 2, "title": "Album B"},
+                {"id": 20, "title": "Upcoming Album", "release_date": "2999-01-01"},
+                {"id": 21, "title": "New Album", "release_date": "2024-01-01"},
             ]
         },
     )
-    httpx_mock.add_response(
-        url="https://api.deezer.com/album/1",
-        json={"id": 1, "title": "Album A", "release_date": "2020-01-01"},
-    )
-    httpx_mock.add_response(
-        url="https://api.deezer.com/album/2",
-        json={"id": 2, "title": "Album B", "release_date": "2024-01-01"},
-    )
+
     response = client.get("/api/charts/new-releases")
+
     assert response.status_code == 200
-    body = response.json()
-    assert [album["id"] for album in body["data"]] == [2, 1]
+    albums = response.json()["data"]
+    assert [album["title"] for album in albums] == ["New Album", "Old Album"]
+    assert albums[0]["artist"]["name"] == "Artist B"
