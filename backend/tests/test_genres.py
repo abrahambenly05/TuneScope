@@ -12,7 +12,13 @@ FAKE_GENRES_RESPONSE = {
     ]
 }
 FAKE_GENRE_DETAIL = {"id": 132, "name": "Pop", "picture": "https://example.com/pop.jpg"}
-FAKE_ARTISTS_RESPONSE = {"data": [{"id": 1, "name": "Fake Artist"}]}
+FAKE_GENRE_TRACKS_RESPONSE = {
+    "data": [
+        {"id": 1, "title": "Song A", "artist": {"id": 10, "name": "Artist A"}},
+        {"id": 2, "title": "Song B", "artist": {"id": 10, "name": "Artist A"}},
+        {"id": 3, "title": "Song C", "artist": {"id": 20, "name": "Artist B"}},
+    ]
+}
 
 def test_list_genres_exludes_all_genres(httpx_mock):
     httpx_mock.add_response(
@@ -31,14 +37,14 @@ def test_genre_detail(httpx_mock):
         json=FAKE_GENRE_DETAIL,
     )
     httpx_mock.add_response(
-        url="https://api.deezer.com/genre/132/artists?limit=20",
-        json=FAKE_ARTISTS_RESPONSE,
+        url="https://api.deezer.com/chart/132/tracks?limit=100",
+        json=FAKE_GENRE_TRACKS_RESPONSE,
     )
     response = client.get("/api/genres/132")
     assert response.status_code == 200
     body = response.json()
     assert body["name"] == "Pop"
-    assert body["artists"] == FAKE_ARTISTS_RESPONSE["data"]
+    assert [artist["name"] for artist in body["artists"]] == ["Artist A", "Artist B"]
     
 def test_genre_detail_not_found(httpx_mock):
     httpx_mock.add_response(

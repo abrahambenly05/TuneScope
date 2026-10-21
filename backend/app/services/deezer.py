@@ -136,10 +136,29 @@ async def get_genre(genre_id: int) -> dict:
         response.raise_for_status()
         return response.json()
 
-async def get_genre_artists(genre_id: int, limit: int = 20) -> list[dict]:
+async def get_genre_tracks(genre_id: int, limit: int = 100) -> list[dict]:
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"{DEEZER_BASE_URL}/genre/{genre_id}/artists", params={"limit": limit}
+            f"{DEEZER_BASE_URL}/chart/{genre_id}/tracks", params={"limit": limit}
         )
         response.raise_for_status()
         return response.json().get("data", [])
+    
+async def get_genre_artists(genre_id: int, limit: int = 20) -> list[dict]:
+    tracks = await get_genre_tracks(genre_id, limit=100)
+
+    artists: list[dict] = []
+    seen_ids: set[int] = set()
+    for track in tracks:
+        artist = track.get("artist")
+        if not artist:
+            continue
+        artist_id = artist.get("id")
+        if artist_id is None or artist_id in seen_ids:
+            continue
+        seen_ids.add(artist_id)
+        artists.append(artist)
+        if len(artists) >= limit:
+            break
+
+    return artists
